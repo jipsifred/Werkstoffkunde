@@ -187,7 +187,7 @@ export default function App() {
               <div className="flex bg-cream-light border border-border rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('summary')}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                  className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                     viewMode === 'summary'
                       ? 'bg-card text-text-primary shadow-sm'
                       : 'text-text-secondary hover:text-text-primary'
@@ -197,7 +197,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setViewMode('flashcard')}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                  className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                     viewMode === 'flashcard'
                       ? 'bg-card text-text-primary shadow-sm'
                       : 'text-text-secondary hover:text-text-primary'
