@@ -60,13 +60,20 @@ export const useCardStore = create<CardStore>((set, get) => ({
   viewMode: 'summary',
 
   loadCards: async () => {
-    const cards = await db.getAllCards()
-    set({ cards, topics: extractTopics(cards) })
+    try {
+      const cards = await db.getAllCards()
+      set({ cards, topics: extractTopics(cards) })
+    } catch {
+      // Server might not be ready yet — keep empty state
+    }
   },
 
   importCards: async (data: CardImportData) => {
     // Server handles duplicate detection and ID generation
     const result = await db.importCards(data.cards as unknown as Record<string, unknown>[])
+    if (!result || typeof result.imported !== 'number') {
+      throw new Error('Import fehlgeschlagen')
+    }
     // Reload all cards from server to stay in sync
     const cards = await db.getAllCards()
     set({ cards, topics: extractTopics(cards) })
