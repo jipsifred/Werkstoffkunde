@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@theme {
+  --color-cream: #F5F0E8;
+  --color-cream-light: #FAF7F2;
+  --color-card: #FFFDF9;
+  --color-text-primary: #2D2A26;
+  --color-text-secondary: #7A756E;
+  --color-border: #E8E2D9;
+  --color-accent: #4A7C6F;
+  --color-accent-hover: #3D6B5E;
+  --color-accent-light: #4a7c6f1a;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-text-primary);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.katex {
+  font-size: 1.1em;
+}
+
+.katex-display {
+  margin: 0.75em 0;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+@keyframes flip {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(180deg); }
+}
+
+@keyframes flip-back {
+  0% { transform: rotateY(180deg); }
+  100% { transform: rotateY(360deg); }
+}

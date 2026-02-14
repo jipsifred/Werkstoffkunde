@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "title": "Werkstoffkunde 1 – Formelsammlung",
+    "version": "1.0",
+    "last_updated": "2025-02-14",
+    "schema_version": "1.0"
+  },
+  "topics": [
+    "Zugversuch",
+    "Zeitstandversuch",
+    "Schwingende Beanspruchung",
+    "Mehrachsige Beanspruchung",
+    "Kerbwirkung",
+    "Kerbschlagbiegeversuch",
+    "Bruchmechanik",
+    "Härteprüfung",
+    "Kristallgeometrie",
+    "Diffusion",
+    "Versetzungen",
+    "Plastische Verformung",
+    "Erholung und Rekristallisation",
+    "Zustandsdiagramme",
+    "Phasenumwandlungen",
+    "Eisen-Kohlenstoff-Diagramm",
+    "Wärmebehandlung",
+    "Aluminiumwerkstoffe"
+  ],
+  "types": ["Formel", "Definition", "Graph", "Erklärung"],
+  "cards": [
+    {
+      "id": "ZUG-F-001",
+      "topic": "Zugversuch",
+      "type": "Formel",
+      "title": "Technische Spannung",
+      "content": "Verhältnis der Kraft zum Anfangsquerschnitt.",
+      "latex": "\\sigma = \\frac{F}{S_0}",
+      "variables": [
+        { "symbol": "\\sigma", "name": "Normalspannung", "unit": "MPa" },
+        { "symbol": "F", "name": "Kraft", "unit": "N" },
+        { "symbol": "S_0", "name": "Anfangsquerschnitt", "unit": "mm²" }
+      ],
+      "result_unit": "MPa",
+      "conditions": null,
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-F-002",
+      "topic": "Zugversuch",
+      "type": "Formel",
+      "title": "Dehnung",
+      "content": "Verhältnis der Längenänderung zur Anfangsmesslänge.",
+      "latex": "\\varepsilon = \\frac{\\Delta L}{L_0}",
+      "variables": [
+        { "symbol": "\\varepsilon", "name": "Dehnung", "unit": "-" },
+        { "symbol": "\\Delta L", "name": "Längenänderung", "unit": "mm" },
+        { "symbol": "L_0", "name": "Anfangsmesslänge", "unit": "mm" }
+      ],
+      "result_unit": "-",
+      "conditions": null,
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-D-001",
+      "topic": "Zugversuch",
+      "type": "Definition",
+      "title": "Anfangsquerschnitt",
+      "content": "Querschnittsfläche der Probe vor Versuchsbeginn.",
+      "latex": "S_0 = B_0 \\cdot H_0",
+      "variables": [
+        { "symbol": "S_0", "name": "Anfangsquerschnitt", "unit": "mm²" },
+        { "symbol": "B_0", "name": "Anfangsbreite", "unit": "mm" },
+        { "symbol": "H_0", "name": "Anfangshöhe", "unit": "mm" }
+      ],
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-D-002",
+      "topic": "Zugversuch",
+      "type": "Definition",
+      "title": "Proportionalstab",
+      "content": "Probe mit festem Verhältnis zwischen Messlänge und Querschnitt. L₀ muss > 20 mm sein.",
+      "latex": "L_0 = k \\cdot \\sqrt{S_0}",
+      "variables": [
+        { "symbol": "L_0", "name": "Anfangsmesslänge", "unit": "mm" },
+        { "symbol": "k", "name": "Proportionalitätsfaktor (5,65 kurz; 11,3 lang)", "unit": "-" },
+        { "symbol": "S_0", "name": "Anfangsquerschnitt", "unit": "mm²" }
+      ],
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-G-001",
+      "topic": "Zugversuch",
+      "type": "Graph",
+      "title": "Spannungs-Dehnungs-Diagramm",
+      "content": "Zusammenhang zwischen Spannung σ und Dehnung ε mit elastischem und plastischem Bereich.",
+      "axes": { "x": "Dehnung ε", "y": "Spannung σ [MPa]" },
+      "key_features": [
+        "Fließgrenze σ_y",
+        "Zugfestigkeit R_m bei F_m",
+        "Bruchpunkt",
+        "Gleichmaßdehnung A_g",
+        "Einschnürdehnung"
+      ],
+      "image": null,
+      "image_needed": true,
+      "image_description": "σ-ε-Diagramm mit Fließgrenze, Zugfestigkeit, Gleichmaßdehnung, Einschnürbereich und Bruchpunkt."
+    },
+    {
+      "id": "ZUG-E-001",
+      "topic": "Zugversuch",
+      "type": "Erklärung",
+      "title": "Elastische und plastische Dehnung",
+      "content": "Die Gesamtdehnung setzt sich aus reversiblem elastischem Anteil ε_e und irreversiblem plastischem Anteil ε_p zusammen. Die bleibende Dehnung ε_r nach Entlastung ist ε_r ≤ ε_p.",
+      "latex": "\\varepsilon = \\varepsilon_e + \\varepsilon_p",
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-F-003",
+      "topic": "Zugversuch",
+      "type": "Formel",
+      "title": "Elastizitätsmodul",
+      "content": "Steigung im linear-elastischen Bereich des σ-ε-Diagramms.",
+      "latex": "E = \\frac{\\sigma}{\\varepsilon}",
+      "variables": [
+        { "symbol": "E", "name": "Elastizitätsmodul", "unit": "MPa" },
+        { "symbol": "\\sigma", "name": "Spannung", "unit": "MPa" },
+        { "symbol": "\\varepsilon", "name": "Dehnung", "unit": "-" }
+      ],
+      "result_unit": "MPa",
+      "conditions": "Gilt nur im linear-elastischen Bereich.",
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-F-004",
+      "topic": "Zugversuch",
+      "type": "Formel",
+      "title": "Querkontraktionszahl",
+      "content": "Verhältnis der Querdehnung zur Längsdehnung (negativ, da gegenläufig).",
+      "latex": "\\nu = -\\frac{\\varepsilon_T}{\\varepsilon_L}",
+      "variables": [
+        { "symbol": "\\nu", "name": "Querkontraktionszahl", "unit": "-" },
+        { "symbol": "\\varepsilon_T", "name": "Querdehnung", "unit": "-" },
+        { "symbol": "\\varepsilon_L", "name": "Längsdehnung", "unit": "-" }
+      ],
+      "result_unit": "-",
+      "conditions": null,
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-F-005",
+      "topic": "Zugversuch",
+      "type": "Formel",
+      "title": "Schubmodul",
+      "content": "Ursprungstangente im Schubspannungs-Scherungs-Diagramm.",
+      "latex": "G = \\frac{E}{2 \\cdot (1 + \\nu)}",
+      "variables": [
+        { "symbol": "G", "name": "Schubmodul", "unit": "MPa" },
+        { "symbol": "E", "name": "Elastizitätsmodul", "unit": "MPa" },
+        { "symbol": "\\nu", "name": "Querkontraktionszahl", "unit": "-" }
+      ],
+      "result_unit": "MPa",
+      "conditions": null,
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    },
+    {
+      "id": "ZUG-F-006",
+      "topic": "Zugversuch",
+      "type": "Formel",
+      "title": "Kompressionsmodul",
+      "content": "Volumenabnahme eines Werkstoffs unter isostatischem Druck.",
+      "latex": "K = \\frac{E}{3 \\cdot (1 - 2\\nu)}",
+      "variables": [
+        { "symbol": "K", "name": "Kompressionsmodul", "unit": "MPa" },
+        { "symbol": "E", "name": "Elastizitätsmodul", "unit": "MPa" },
+        { "symbol": "\\nu", "name": "Querkontraktionszahl", "unit": "-" }
+      ],
+      "result_unit": "MPa",
+      "conditions": null,
+      "image": null,
+      "image_needed": false,
+      "image_description": null
+    }
+  ]
+}
