@@ -1,4 +1,4 @@
-import type { Card } from '../types/card'
+import type { Card, CardCategory } from '../types/card'
 
 const API = '/api'
 
@@ -25,7 +25,7 @@ export async function createCard(card: Omit<Card, 'id'> & { id?: string }): Prom
   return res.json()
 }
 
-export async function importCards(cards: Record<string, unknown>[]): Promise<{
+export async function importCards(cards: Record<string, unknown>[], category: CardCategory = 'Theorie'): Promise<{
   imported: number
   duplicates: number
   cards: Card[]
@@ -33,7 +33,7 @@ export async function importCards(cards: Record<string, unknown>[]): Promise<{
   const res = await fetch(`${API}/cards/import`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cards }),
+    body: JSON.stringify({ cards, category }),
   })
   return res.json()
 }

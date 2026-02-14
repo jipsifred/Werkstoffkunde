@@ -16,6 +16,7 @@ db.exec(`
     id TEXT PRIMARY KEY,
     topic TEXT NOT NULL,
     type TEXT NOT NULL,
+    category TEXT NOT NULL DEFAULT 'Theorie',
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     latex TEXT,
@@ -32,16 +33,24 @@ db.exec(`
   )
 `)
 
+// Migration: add category column if missing (existing cards get 'Theorie' via DEFAULT)
+const columns = db.pragma('table_info(cards)') as { name: string }[]
+if (!columns.some((c) => c.name === 'category')) {
+  db.exec(`ALTER TABLE cards ADD COLUMN category TEXT NOT NULL DEFAULT 'Theorie'`)
+}
+
 // Create indexes
 db.exec(`
   CREATE INDEX IF NOT EXISTS idx_cards_topic ON cards(topic);
   CREATE INDEX IF NOT EXISTS idx_cards_type ON cards(type);
+  CREATE INDEX IF NOT EXISTS idx_cards_category ON cards(category);
 `)
 
 export interface CardRow {
   id: string
   topic: string
   type: string
+  category: string
   title: string
   content: string
   latex: string | null
@@ -60,12 +69,12 @@ const stmts = {
   getAll: db.prepare('SELECT * FROM cards ORDER BY topic, type, id'),
   getById: db.prepare('SELECT * FROM cards WHERE id = ?'),
   insert: db.prepare(`
-    INSERT INTO cards (id, topic, type, title, content, latex, variables, result_unit, conditions, axes, key_features, image, image_needed, image_description)
-    VALUES (@id, @topic, @type, @title, @content, @latex, @variables, @result_unit, @conditions, @axes, @key_features, @image, @image_needed, @image_description)
+    INSERT INTO cards (id, topic, type, category, title, content, latex, variables, result_unit, conditions, axes, key_features, image, image_needed, image_description)
+    VALUES (@id, @topic, @type, @category, @title, @content, @latex, @variables, @result_unit, @conditions, @axes, @key_features, @image, @image_needed, @image_description)
   `),
   update: db.prepare(`
     UPDATE cards SET
-      topic = @topic, type = @type, title = @title, content = @content,
+      topic = @topic, type = @type, category = @category, title = @title, content = @content,
       latex = @latex, variables = @variables, result_unit = @result_unit,
       conditions = @conditions, axes = @axes, key_features = @key_features,
       image = @image, image_needed = @image_needed, image_description = @image_description,
@@ -73,10 +82,10 @@ const stmts = {
     WHERE id = @id
   `),
   upsert: db.prepare(`
-    INSERT INTO cards (id, topic, type, title, content, latex, variables, result_unit, conditions, axes, key_features, image, image_needed, image_description)
-    VALUES (@id, @topic, @type, @title, @content, @latex, @variables, @result_unit, @conditions, @axes, @key_features, @image, @image_needed, @image_description)
+    INSERT INTO cards (id, topic, type, category, title, content, latex, variables, result_unit, conditions, axes, key_features, image, image_needed, image_description)
+    VALUES (@id, @topic, @type, @category, @title, @content, @latex, @variables, @result_unit, @conditions, @axes, @key_features, @image, @image_needed, @image_description)
     ON CONFLICT(id) DO UPDATE SET
-      topic = @topic, type = @type, title = @title, content = @content,
+      topic = @topic, type = @type, category = @category, title = @title, content = @content,
       latex = @latex, variables = @variables, result_unit = @result_unit,
       conditions = @conditions, axes = @axes, key_features = @key_features,
       image = @image, image_needed = @image_needed, image_description = @image_description,
@@ -92,6 +101,7 @@ function cardToRow(card: Record<string, unknown>): Record<string, unknown> {
     id: card.id,
     topic: card.topic,
     type: card.type,
+    category: card.category ?? 'Theorie',
     title: card.title,
     content: card.content,
     latex: card.latex ?? null,
@@ -111,6 +121,7 @@ function rowToCard(row: CardRow): Record<string, unknown> {
     id: row.id,
     topic: row.topic,
     type: row.type,
+    category: row.category,
     title: row.title,
     content: row.content,
     latex: row.latex,

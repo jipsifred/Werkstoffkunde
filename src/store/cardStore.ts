@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Card, CardType, CardImportData } from '../types/card'
+import type { Card, CardType, CardCategory, CardImportData } from '../types/card'
 import * as db from './db'
 
 interface CardStore {
@@ -8,11 +8,12 @@ interface CardStore {
 
   selectedTopics: string[]
   selectedTypes: CardType[]
+  selectedCategory: CardCategory | null
   searchQuery: string
   viewMode: 'summary' | 'flashcard'
 
   loadCards: () => Promise<void>
-  importCards: (data: CardImportData) => Promise<{ imported: number; duplicates: number }>
+  importCards: (data: CardImportData, category: CardCategory) => Promise<{ imported: number; duplicates: number }>
   addCard: (card: Omit<Card, 'id'>) => Promise<void>
   updateCard: (id: string, updates: Partial<Card>) => Promise<void>
   deleteCard: (id: string) => Promise<void>
@@ -20,6 +21,7 @@ interface CardStore {
 
   toggleTopic: (topic: string) => void
   toggleType: (type: CardType) => void
+  setCategory: (category: CardCategory | null) => void
   setSearchQuery: (query: string) => void
   resetFilters: () => void
   setViewMode: (mode: 'summary' | 'flashcard') => void
@@ -56,6 +58,7 @@ export const useCardStore = create<CardStore>((set, get) => ({
   topics: [],
   selectedTopics: [],
   selectedTypes: [],
+  selectedCategory: null,
   searchQuery: '',
   viewMode: 'summary',
 
@@ -68,9 +71,9 @@ export const useCardStore = create<CardStore>((set, get) => ({
     }
   },
 
-  importCards: async (data: CardImportData) => {
+  importCards: async (data: CardImportData, category: CardCategory) => {
     // Server handles duplicate detection and ID generation
-    const result = await db.importCards(data.cards as unknown as Record<string, unknown>[])
+    const result = await db.importCards(data.cards as unknown as Record<string, unknown>[], category)
     if (!result || typeof result.imported !== 'number') {
       throw new Error('Import fehlgeschlagen')
     }
@@ -142,13 +145,15 @@ export const useCardStore = create<CardStore>((set, get) => ({
     }
   },
 
+  setCategory: (category: CardCategory | null) => set({ selectedCategory: category }),
   setSearchQuery: (query: string) => set({ searchQuery: query }),
-  resetFilters: () => set({ selectedTopics: [], selectedTypes: [], searchQuery: '' }),
+  resetFilters: () => set({ selectedTopics: [], selectedTypes: [], selectedCategory: null, searchQuery: '' }),
   setViewMode: (mode: 'summary' | 'flashcard') => set({ viewMode: mode }),
 
   getFilteredCards: () => {
-    const { cards, selectedTopics, selectedTypes, searchQuery } = get()
+    const { cards, selectedTopics, selectedTypes, selectedCategory, searchQuery } = get()
     let filtered = cards
+    if (selectedCategory) filtered = filtered.filter((c) => c.category === selectedCategory)
     if (selectedTopics.length > 0) filtered = filtered.filter((c) => selectedTopics.includes(c.topic))
     if (selectedTypes.length > 0) filtered = filtered.filter((c) => selectedTypes.includes(c.type))
     if (searchQuery.trim()) filtered = filtered.filter((c) => cardMatchesSearch(c, searchQuery.trim()))

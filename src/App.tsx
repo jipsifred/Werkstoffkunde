@@ -28,10 +28,14 @@ export default function App() {
   const cards = useCardStore((s) => s.cards)
   const selectedTopics = useCardStore((s) => s.selectedTopics)
   const selectedTypes = useCardStore((s) => s.selectedTypes)
+  const selectedCategory = useCardStore((s) => s.selectedCategory)
   const searchQuery = useCardStore((s) => s.searchQuery)
 
   const filteredCards = useMemo(() => {
     let filtered = cards
+    if (selectedCategory) {
+      filtered = filtered.filter((c) => c.category === selectedCategory)
+    }
     if (selectedTopics.length > 0) {
       filtered = filtered.filter((c) => selectedTopics.includes(c.topic))
     }
@@ -42,9 +46,9 @@ export default function App() {
       filtered = filtered.filter((c) => cardMatchesSearch(c, searchQuery.trim()))
     }
     return filtered
-  }, [cards, selectedTopics, selectedTypes, searchQuery])
+  }, [cards, selectedTopics, selectedTypes, selectedCategory, searchQuery])
 
-  const activeFilterCount = selectedTopics.length + selectedTypes.length + (searchQuery.trim() ? 1 : 0)
+  const activeFilterCount = selectedTopics.length + selectedTypes.length + (selectedCategory ? 1 : 0) + (searchQuery.trim() ? 1 : 0)
 
   const [showImport, setShowImport] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | null>(null)

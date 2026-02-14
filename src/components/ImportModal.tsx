@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react'
-import type { Card, CardImportData } from '../types/card'
+import type { Card, CardCategory, CardImportData } from '../types/card'
 import { useCardStore } from '../store/cardStore'
 
 interface ImportModalProps {
@@ -24,6 +24,7 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
   const [pasteText, setPasteText] = useState('')
   const [parseError, setParseError] = useState<string | null>(null)
   const [parsed, setParsed] = useState<ParsedImport | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<CardCategory>('Theorie')
   const [isImporting, setIsImporting] = useState(false)
   const [result, setResult] = useState<{ imported: number; duplicates: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -34,6 +35,7 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
     setResult(null)
     setIsImporting(false)
     setPasteText('')
+    setSelectedCategory('Theorie')
   }, [])
 
   const handleClose = useCallback(() => {
@@ -72,13 +74,13 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
           }
         }
 
-        // Detect duplicates by matching on title+topic+type fingerprint
+        // Detect duplicates by matching on title+topic+type+category fingerprint
         const existingFingerprints = new Set(
-          existingCards.map((c) => `${c.title}|||${c.topic}|||${c.type}`),
+          existingCards.map((c) => `${c.title}|||${c.topic}|||${c.type}|||${c.category}`),
         )
 
         const duplicates = data.cards.filter((c) =>
-          existingFingerprints.has(`${c.title}|||${c.topic}|||${c.type}`),
+          existingFingerprints.has(`${c.title}|||${c.topic}|||${c.type}|||${selectedCategory}`),
         )
 
         const topics = Array.from(new Set(data.cards.map((c) => c.topic))).sort()
@@ -93,7 +95,7 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
         setParseError('Die Datei konnte nicht als JSON gelesen werden.')
       }
     },
-    [existingCards],
+    [existingCards, selectedCategory],
   )
 
   const processFile = useCallback(
@@ -159,17 +161,17 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
         if (strategy === 'skip_all' && parsed.duplicates.length > 0) {
           // Filter out duplicates
           const dupFingerprints = new Set(
-            parsed.duplicates.map((c) => `${c.title}|||${c.topic}|||${c.type}`),
+            parsed.duplicates.map((c) => `${c.title}|||${c.topic}|||${c.type}|||${selectedCategory}`),
           )
           dataToImport = {
             ...parsed.data,
             cards: parsed.data.cards.filter(
-              (c) => !dupFingerprints.has(`${c.title}|||${c.topic}|||${c.type}`),
+              (c) => !dupFingerprints.has(`${c.title}|||${c.topic}|||${c.type}|||${selectedCategory}`),
             ),
           }
         }
 
-        const importResult = await importCards(dataToImport)
+        const importResult = await importCards(dataToImport, selectedCategory)
         setResult(importResult)
       } catch {
         setParseError('Fehler beim Importieren.')
@@ -177,7 +179,7 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
         setIsImporting(false)
       }
     },
-    [parsed, importCards],
+    [parsed, importCards, selectedCategory],
   )
 
   if (!isOpen) return null
@@ -232,6 +234,26 @@ export default function ImportModal({ isOpen, onClose }: ImportModalProps) {
           {/* Preview */}
           {!result && parsed && (
             <div className="space-y-4">
+              {/* Category selection */}
+              <div>
+                <p className="text-sm text-text-secondary mb-2">Kategorie für importierte Karten:</p>
+                <div className="flex gap-2">
+                  {(['Theorie', 'Klausuraufgaben'] as const).map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        selectedCategory === cat
+                          ? 'bg-accent text-white'
+                          : 'bg-cream-light border border-border text-text-primary hover:bg-border'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Summary */}
               <div className="bg-cream-light rounded-lg p-4 space-y-2">
                 <div className="flex justify-between text-sm">

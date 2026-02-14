@@ -62,7 +62,7 @@ app.delete('/api/cards/:id', (req, res) => {
 
 // POST /api/cards/import — bulk import
 app.post('/api/cards/import', (req, res) => {
-  const { cards } = req.body
+  const { cards, category = 'Theorie' } = req.body
   if (!Array.isArray(cards)) {
     res.status(400).json({ error: 'cards Array fehlt.' })
     return
@@ -72,7 +72,7 @@ app.post('/api/cards/import', (req, res) => {
   const existingCards = db.getAllCards()
 
   const existingFingerprints = new Set(
-    existingCards.map((c: Record<string, unknown>) => `${c.title}|||${c.topic}|||${c.type}`),
+    existingCards.map((c: Record<string, unknown>) => `${c.title}|||${c.topic}|||${c.type}|||${c.category}`),
   )
 
   const imported: Record<string, unknown>[] = []
@@ -80,13 +80,13 @@ app.post('/api/cards/import', (req, res) => {
   const allIds = [...existingIds]
 
   for (const card of cards) {
-    const fingerprint = `${card.title}|||${card.topic}|||${card.type}`
+    const fingerprint = `${card.title}|||${card.topic}|||${card.type}|||${category}`
     if (existingFingerprints.has(fingerprint)) {
       duplicates.push(card)
       continue
     }
     const id = generateCardId(card.topic, card.type, allIds)
-    const fullCard = { ...card, id }
+    const fullCard = { ...card, id, category }
     allIds.push(id)
     imported.push(fullCard)
   }

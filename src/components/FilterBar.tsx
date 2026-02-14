@@ -1,20 +1,23 @@
 import { useCardStore } from '../store/cardStore'
-import type { CardType } from '../types/card'
+import type { CardType, CardCategory } from '../types/card'
 
 const ALL_TYPES: CardType[] = ['Formel', 'Definition', 'Graph', 'Erklärung']
+const ALL_CATEGORIES: CardCategory[] = ['Theorie', 'Klausuraufgaben']
 
 export default function FilterBar() {
   const topics = useCardStore((s) => s.topics)
   const selectedTopics = useCardStore((s) => s.selectedTopics)
   const selectedTypes = useCardStore((s) => s.selectedTypes)
+  const selectedCategory = useCardStore((s) => s.selectedCategory)
   const searchQuery = useCardStore((s) => s.searchQuery)
   const toggleTopic = useCardStore((s) => s.toggleTopic)
   const toggleType = useCardStore((s) => s.toggleType)
+  const setCategory = useCardStore((s) => s.setCategory)
   const setSearchQuery = useCardStore((s) => s.setSearchQuery)
   const resetFilters = useCardStore((s) => s.resetFilters)
 
   const hasActiveFilters =
-    selectedTopics.length > 0 || selectedTypes.length > 0 || searchQuery.trim().length > 0
+    selectedTopics.length > 0 || selectedTypes.length > 0 || selectedCategory !== null || searchQuery.trim().length > 0
 
   return (
     <div className="space-y-4">
@@ -50,6 +53,33 @@ export default function FilterBar() {
             </svg>
           </button>
         )}
+      </div>
+
+      {/* Category filter chips */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setCategory(null)}
+          className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            selectedCategory === null
+              ? 'bg-accent text-white'
+              : 'bg-cream-light border border-border text-text-primary hover:bg-border'
+          }`}
+        >
+          Alle
+        </button>
+        {ALL_CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategory(selectedCategory === cat ? null : cat)}
+            className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              selectedCategory === cat
+                ? 'bg-accent text-white'
+                : 'bg-cream-light border border-border text-text-primary hover:bg-border'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
 
       {/* Type filter chips */}

@@ -5,11 +5,13 @@ export interface Variable {
 }
 
 export type CardType = 'Formel' | 'Definition' | 'Graph' | 'Erklärung'
+export type CardCategory = 'Theorie' | 'Klausuraufgaben'
 
 export interface Card {
   id: string
   topic: string
   type: CardType
+  category: CardCategory
   title: string
   content: string
   latex?: string
